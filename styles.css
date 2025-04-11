@@ -1,0 +1,112 @@
+/*
+    Navbar
+*/
+.navbar {
+    color: white;
+    background-color: #4a90e2;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .welcome {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.navbar .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.navbar a {
+    color: white;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.navbar a:hover {
+    opacity: 0.8;
+}
+
+.navbar img {
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+}
+
+/*
+    Login
+*/
+.login-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    padding: 40px;
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    margin: 8px 0 16px;
+    padding: 12px;
+}
+
+.login-container button {
+    color: white;
+    background-color: #4a90e2;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    padding: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.login-container button:hover {
+    background-color: #357ab8;
+}
+
+/*
+    Student Grades
+*/
+.term-section {
+    width: 80%;
+    margin-bottom: 40px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.term-title {
+    color: #4a90e2;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+/*
+    Faculty Grades
+*/
+.upload-box {
+    background: white;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px 40px;
+}
+
+.upload-box h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
