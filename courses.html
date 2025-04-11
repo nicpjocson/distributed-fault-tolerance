@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div id="navbar-placeholder"></div>
+
     <h1>Available Courses</h1>
     <table id="courseTable">
         <thead>
@@ -49,6 +51,12 @@
             });
             tableBody.appendChild(tr);
         });
+
+        // fetch('navbar.html')
+        //     .then(response => response.text())
+        //     .then(data => {
+        //         document.getElementById('navbar-placeholder').innerHTML = data;
+        // });
     </script>
 </body>
 </html>
