@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Grades</title>
+    <style>
+        body {
+            background: #f7f9fc;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .term-section {
+            width: 80%;
+            margin-bottom: 40px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .term-title {
+            color: #4a90e2;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        table {
+            background-color: #fff;
+            border-collapse: collapse;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+            width: 100%;
+        }
+
+        th, td {
+            text-align: left;
+            border: 1px solid #ddd;
+            padding: 10px 14px;
+        }
+
+        th {
+            color: white;
+            background-color: #4a90e2;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Previous Grades</h1>
+    <div id="gradesContainer"></div>
+
+    <script>
+        const studentGrades = {
+        "1st Term AY 2023-2024": [
+            { code: "CS101", grade: "1.25" },
+            { code: "MATH101", grade: "1.50" },
+            { code: "ENG101", grade: "1.75" }
+        ],
+        "2nd Term AY 2023-2024": [
+            { code: "CS102", grade: "1.25" },
+            { code: "MATH102", grade: "1.25" },
+            { code: "ENG102", grade: "1.50" }
+        ],
+        "1st Term AY 2024-2025": [
+            { code: "CS201", grade: "1.00" },
+            { code: "STAT101", grade: "1.25" }
+        ]
+        };
+
+        const container = document.getElementById("gradesContainer");
+
+        Object.entries(studentGrades).forEach(([term, courses]) => {
+        const section = document.createElement("div");
+        section.className = "term-section";
+
+        const title = document.createElement("div");
+        title.className = "term-title";
+        title.textContent = term;
+
+        const table = document.createElement("table");
+
+        // Create table header
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+        ["Course Code", "Grade"].forEach(text => {
+            const th = document.createElement("th");
+            th.textContent = text;
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create table body
+        const tbody = document.createElement("tbody");
+        courses.forEach(course => {
+            const tr = document.createElement("tr");
+
+            const codeTd = document.createElement("td");
+            codeTd.textContent = course.code;
+            tr.appendChild(codeTd);
+
+            const gradeTd = document.createElement("td");
+            gradeTd.textContent = course.grade;
+            tr.appendChild(gradeTd);
+
+            tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+        section.appendChild(title);
+        section.appendChild(table);
+        container.appendChild(section);
+        });
+    </script>
+</body>
+</html>
