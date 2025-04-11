@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dynamic Course List</title>
+    <title>Available Courses</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="navbar-placeholder"></div>
-
     <h1>Available Courses</h1>
     <table id="courseTable">
         <thead>
@@ -19,39 +18,64 @@
             <!-- Rows added dynamically -->
         </tbody>
     </table>
-  
+
     <script>
         // Sample data
         const courses = [
-            { code: "CCICOMP", name: "Introduction to Computing" },
-            { code: "CCDSTRU", name: "Discrete Structures" },
-            { code: "LASARE2", name: "Lasallian Recollection 2" },
-            { code: "GERPHIS", name: "Mga Babasahin sa Kasaysayan ng Pilipinas" }
+            { code: "CCICOMP", name: "Introduction to Computing", open: true },
+            { code: "CCDSTRU", name: "Discrete Structures", open: false },
+            { code: "LASARE2", name: "Lasallian Recollection 2", open: true },
+            { code: "GERPHIS", name: "Mga Babasahin sa Kasaysayan ng Pilipinas", open: true }
         ];
-    
-        const headers = ["code", "name"]; // Can add more fields here (e.g., "Faculty", "Room", "Blah Blah")
-    
+
+        const headers = ["Code", "Name", "Status", "    "]; 
+
         const tableHeader = document.getElementById("tableHeader");
         const tableBody = document.getElementById("tableBody");
-    
+
         // Generate headers
         headers.forEach(header => {
             const th = document.createElement("th");
-            th.textContent = header.charAt(0).toUpperCase() + header.slice(1);
+            th.textContent = header;
             tableHeader.appendChild(th);
         });
-    
+
         // Generate rows
         courses.forEach(course => {
             const tr = document.createElement("tr");
-            headers.forEach(header => {
-            const td = document.createElement("td");
-            td.textContent = course[header] || "";
-            tr.appendChild(td);
-            });
+
+            // Add course details
+            const codeTd = document.createElement("td");
+            codeTd.textContent = course.code;
+            tr.appendChild(codeTd);
+
+            const nameTd = document.createElement("td");
+            nameTd.textContent = course.name;
+            tr.appendChild(nameTd);
+
+            const statusTd = document.createElement("td");
+            statusTd.textContent = course.open ? "Open" : "Closed";
+            tr.appendChild(statusTd);
+
+            // Add Enroll button
+            const actionTd = document.createElement("td");
+            if (course.open) {
+                const enrollButton = document.createElement("button");
+                enrollButton.textContent = "Enroll";
+                enrollButton.onclick = () => enrollToCourse(course.code);
+                actionTd.appendChild(enrollButton);
+            } else {
+                actionTd.textContent = "N/A";
+            }
+            tr.appendChild(actionTd);
+
             tableBody.appendChild(tr);
         });
 
+        // Function to handle enrollment
+        function enrollToCourse(courseCode) {
+            alert(`You are now enrolled in ${courseCode}`);
+        }
         // fetch('navbar.html')
         //     .then(response => response.text())
         //     .then(data => {
