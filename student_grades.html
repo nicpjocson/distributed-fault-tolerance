@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div id="navbar-placeholder"></div>
+
     <h1>Previous Grades</h1>
     <div id="gradesContainer"></div>
 
@@ -71,6 +73,13 @@
         section.appendChild(table);
         container.appendChild(section);
         });
+
+
+        fetch('navbar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar-placeholder').innerHTML = data;
+            });
     </script>
 </body>
 </html>

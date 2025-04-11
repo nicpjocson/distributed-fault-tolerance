@@ -76,11 +76,13 @@
         function enrollToCourse(courseCode) {
             alert(`You are now enrolled in ${courseCode}`);
         }
-        // fetch('navbar.html')
-        //     .then(response => response.text())
-        //     .then(data => {
-        //         document.getElementById('navbar-placeholder').innerHTML = data;
-        // });
+        
+        fetch('navbar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar-placeholder').innerHTML = data;
+            });
+        
     </script>
 </body>
 </html>
