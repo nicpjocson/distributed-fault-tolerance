@@ -118,7 +118,7 @@ public class AuthenticationServerConfig {
                         .accessTokenTimeToLive(Duration.ofMinutes(15))
                         .refreshTokenTimeToLive(Duration.ofDays(30))
                         .build())
-                    .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                    .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
                     .build();
 
             return new InMemoryRegisteredClientRepository(registeredClient);

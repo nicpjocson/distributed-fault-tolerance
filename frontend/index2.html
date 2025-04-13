@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth 2.0 Token Retrieval</title>
+</head>
+<body>
+    <h1>Login to Obtain Token</h1>
+    <button id="loginButton">Login</button>
+    <div id="result"></div>
+
+    <script>
+        const clientId = "product-client"; // Matches your backend configuration
+        const redirectUri = "http://localhost:9000/login/oauth2/code/product-client";
+        const scopes = "product.read product.write";
+        const tokenEndpoint = "http://localhost:9000/oauth2/token";
+        const clientSecret = "secret"; // Ensure this matches your backend configuration
+
+        // Step 1: Redirect user to the authorization endpoint
+        document.getElementById("loginButton").addEventListener("click", () => {
+            const state = generateRandomString(); // Random string to prevent CSRF attacks
+            localStorage.setItem("oauth_state", state); // Store state for validation
+
+            const authorizationUrl = `http://localhost:9000/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&state=${state}`;
+            window.location.href = authorizationUrl;
+        });
+
+        // Step 2: Handle redirect and extract authorization code
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get("code");
+            const state = urlParams.get("state");
+
+            // Validate state to prevent CSRF attacks
+            const storedState = localStorage.getItem("oauth_state");
+            if (state !== storedState) {
+                console.error("Invalid state parameter.");
+                return;
+            }
+
+            if (code) {
+                console.log("Authorization Code:", code);
+                exchangeCodeForToken(code);
+            }
+        };
+
+        // Step 3: Exchange authorization code for access token
+        function exchangeCodeForToken(code) {
+            const body = new URLSearchParams({
+                grant_type: "authorization_code",
+                code: code,
+                redirect_uri: redirectUri,
+                client_id: clientId,
+                client_secret: clientSecret,
+            });
+
+            fetch(tokenEndpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: body.toString(),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.access_token) {
+                        console.log("Access Token:", data.access_token);
+                        document.getElementById("result").innerText = `Access Token: ${data.access_token}`;
+                    } else {
+                        console.error("Error retrieving token:", data);
+                        document.getElementById("result").innerText = `Error: ${JSON.stringify(data)}`;
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error exchanging code for token:", error);
+                    document.getElementById("result").innerText = `Error: ${error.message}`;
+                });
+        }
+
+        // Utility function to generate a random string for state
+        function generateRandomString(length = 16) {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            let result = "";
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+    </script>
+</body>
+</html>
