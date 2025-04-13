@@ -17,6 +17,8 @@ function login() {
   window.location.href = `${springBootLoginUrl}?redirect_uri=${redirectUri}`;
 }
 
+
+/*
 function extractJwtTokenFromUrl() {
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get("token"); // Replace "token" with the actual query parameter name used by your Spring Boot server
@@ -26,6 +28,18 @@ function extractJwtTokenFromUrl() {
     alert("Login successful!");
     // Optionally, clear the query parameters from the URL
     window.history.replaceState({}, document.title, window.location.pathname);
+  }
+}
+*/
+
+function setManualToken() {
+  const tokenInput = document.getElementById("manualToken").value;
+  if (tokenInput) {
+    jwtToken = tokenInput;
+    updateLoginStatus(true);
+    alert("Token set successfully!");
+  } else {
+    alert("Please enter a valid token");
   }
 }
 
