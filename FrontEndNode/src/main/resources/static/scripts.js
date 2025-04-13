@@ -1,5 +1,5 @@
 /* filepath: /Users/aaronjardenil/Documents/GitHub/distributed-fault-tolerance/frontend/scripts.js */
-let jwtToken = "eyJraWQiOiI0ZmUzMzdiNS0zMTU2LTQ2NWEtOWM0ZC1mOTA3Y2I4MjYwODAiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhYXJvbl9qYXJkZW5pbEBkbHN1LmVkdS5waCIsImF1ZCI6InByb2R1Y3QtY2xpZW50IiwibmJmIjoxNzQ0NTUzODM1LCJyb2xlIjoiU1RVREVOVCIsInNjb3BlIjpbInByb2R1Y3QucmVhZCIsInByb2R1Y3Qud3JpdGUiXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAwIiwiZXhwIjoxNzQ0NTU0NzM1LCJpYXQiOjE3NDQ1NTM4MzV9.CT0kiasaLXK2sRy5RSMKwotBR-bHAqgYW-jp4YytI1IqyOhWCYfpxa_45bAzGUy-SMarg9TF0v_7WRCjI1Rre23QydAcbUfyvhfQQE8Q8EK--Jhl24KStaC8J7QMusux7tom5ZhDO25Q2znTA-EpeFKnEtQ_TLDrq_7W2spvlJ5iitgkSEG9BCt8m2BP6gcti5NlIL2wjVuI1yhUeWov2VHYfXmHxSjVuVr1cPps4z8A8OxXKbPleX7LjBphEZjLvDcqfiPAVCU1ClITX1R9lbNdDsz0fdxXoOE6zJfhfiSxvfu0MLqk6567GgoX8_1w1P91ibnAPpu-h7TMeLLFow";
+let jwtToken = "";
 
 function showResponse(data) {
   document.getElementById("response").textContent = JSON.stringify(data, null, 2);
@@ -57,15 +57,43 @@ async function viewGrades() {
   const res = await fetch("http://localhost:8001/view-grades", {
     headers: { "Authorization": "Bearer " + jwtToken }
   });
+
+  if (res.status === 401 || res.status === 403) {
+    alert("Session expired. Please log in again.");
+    return;
+  }
+
   const data = await res.json();
   showResponse(data);
 }
 
 async function enroll() {
+  const courseCode = document.getElementById("enrollCourseCode").value;
+
+  if (!jwtToken) {
+    alert("You must be logged in to enroll.");
+    return;
+  }
+
+  if (!courseCode) {
+    alert("Please enter a course code.");
+    return;
+  }
+
   const res = await fetch("http://localhost:8002/enroll", {
     method: "POST",
-    headers: { "Authorization": "Bearer " + jwtToken }
+    headers: {
+      "Authorization": "Bearer " + jwtToken,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ code: courseCode })
   });
+
+  if (res.status === 401 || res.status === 403) {
+    alert("Session expired. Please log in again.");
+    return;
+  }
+
   const data = await res.json();
   showResponse(data);
 }
@@ -88,6 +116,11 @@ async function uploadGrade() {
     })
   });
 
+  if (res.status === 401 || res.status === 403) {
+    alert("Session expired. Please log in again.");
+    return;
+  }
+
   const data = await res.json();
   showResponse(data);
 }
@@ -101,6 +134,11 @@ async function viewCourses() {
   const res = await fetch("http://localhost:8090/courses", {
     headers: { "Authorization": "Bearer " + jwtToken }
   });
+
+  if (res.status === 401 || res.status === 403) {
+    alert("Session expired. Please log in again.");
+    return;
+  }
 
   if (!res.ok) {
     const errorData = await res.json();

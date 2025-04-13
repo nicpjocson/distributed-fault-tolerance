@@ -10,20 +10,13 @@
   <div class="container">
     <h1>Student Portal</h1>
 
-    <!-- Login Status -->
-    <p id="loginStatus">Status: Not Logged In</p>
-
-    <!-- Login Section -->
-    <input id="username" placeholder="Username" />
-    <input id="password" type="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-
     <h3>Manual Token Login</h3>
     <input type="text" id="manualToken" placeholder="Paste JWT token here">
     <button onclick="setManualToken()">Set Token</button>
 
     <!-- Grade Viewing -->
     <button onclick="viewGrades()">View Grades</button>
+    <input type="text" id="enrollCourseCode" placeholder="Enter Course Code">
     <button onclick="enroll()">Enroll</button>
     <button onclick="viewCourses()">View Courses</button>
 
