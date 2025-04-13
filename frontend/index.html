@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Portal</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Student Portal</h1>
+
+    <!-- Login Status -->
+    <p id="loginStatus">Status: Not Logged In</p>
+
+    <!-- Login Section -->
+    <input id="username" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+
+    <!-- Grade Viewing -->
+    <button onclick="viewGrades()">View Grades</button>
+    <button onclick="enroll()">Enroll</button>
+
+    <!-- Upload Grades -->
+    <h3>Upload Grade</h3>
+    <input id="courseCode" placeholder="Course Code" />
+    <input id="uploadUsername" placeholder="Student Username" />
+    <input id="grade" placeholder="Grade" />
+    <button onclick="uploadGrade()">Upload Grade</button>
+
+    <h3>Response</h3>
+    <pre id="response"></pre>
+  </div>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
