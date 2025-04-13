@@ -1,4 +1,13 @@
 /* filepath: /Users/aaronjardenil/Documents/GitHub/distributed-fault-tolerance/frontend/scripts.js */
+const BASE_URL = "http://localhost";
+const ENDPOINTS = {
+  VIEW_GRADES: `${BASE_URL}:8092/grades`,
+  ENROLL: `${BASE_URL}:8091/enrollments`,
+  UPLOAD_GRADE: `${BASE_URL}:8093/grades`,
+  VIEW_COURSES: `${BASE_URL}:8090/courses`,
+  VIEW_ENROLLMENTS: `${BASE_URL}:8091/enrollments`
+};
+
 let jwtToken = "";
 
 function showResponse(data) {
@@ -11,26 +20,10 @@ function updateLoginStatus(isLoggedIn) {
 }
 
 function login() {
-  // Redirect to the Spring Boot authentication server's login page
-  const springBootLoginUrl = "http://localhost:8080/login"; // Replace with your Spring Boot login URL
-  const redirectUri = encodeURIComponent(window.location.origin + "/"); // Redirect back to your frontend
+  const springBootLoginUrl = "http://localhost:8080/login";
+  const redirectUri = encodeURIComponent(window.location.origin + "/");
   window.location.href = `${springBootLoginUrl}?redirect_uri=${redirectUri}`;
 }
-
-
-/*
-function extractJwtTokenFromUrl() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const token = urlParams.get("token"); // Replace "token" with the actual query parameter name used by your Spring Boot server
-  if (token) {
-    jwtToken = token;
-    updateLoginStatus(true);
-    alert("Login successful!");
-    // Optionally, clear the query parameters from the URL
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-}
-*/
 
 function setManualToken() {
   const tokenInput = document.getElementById("manualToken").value;
@@ -43,7 +36,6 @@ function setManualToken() {
   }
 }
 
-// Call this function on page load to check for the token
 window.onload = function () {
   extractJwtTokenFromUrl();
 };
@@ -54,17 +46,27 @@ async function viewGrades() {
     return;
   }
 
-  const res = await fetch("http://localhost:8001/view-grades", {
-    headers: { "Authorization": "Bearer " + jwtToken }
-  });
+  try {
+    const res = await fetch(ENDPOINTS.VIEW_GRADES, {
+      headers: { "Authorization": "Bearer " + jwtToken }
+    });
 
-  if (res.status === 401 || res.status === 403) {
-    alert("Session expired. Please log in again.");
-    return;
+    if (res.status === 401 || res.status === 403) {
+      alert("Session expired. Please log in again.");
+      return;
+    }
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert(`Error ${res.status}: ${JSON.stringify(errorData)}`);
+      return;
+    }
+
+    const data = await res.json();
+    showResponse(data);
+  } catch (error) {
+    alert(`The 'View Grades' feature is currently down. Error: ${error.message}`);
   }
-
-  const data = await res.json();
-  showResponse(data);
 }
 
 async function enroll() {
@@ -80,22 +82,26 @@ async function enroll() {
     return;
   }
 
-  const res = await fetch("http://localhost:8002/enroll", {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + jwtToken,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ code: courseCode })
-  });
+  try {
+    const res = await fetch(ENDPOINTS.ENROLL, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + jwtToken,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ code: courseCode })
+    });
 
-  if (res.status === 401 || res.status === 403) {
-    alert("Session expired. Please log in again.");
-    return;
+    if (res.status === 401 || res.status === 403) {
+      alert("Session expired. Please log in again.");
+      return;
+    }
+
+    const data = await res.json();
+    showResponse(data);
+  } catch (error) {
+    alert("The 'Enroll' feature is currently down. Please try again later.");
   }
-
-  const data = await res.json();
-  showResponse(data);
 }
 
 async function uploadGrade() {
@@ -103,26 +109,51 @@ async function uploadGrade() {
   const username = document.getElementById("uploadUsername").value;
   const grade = document.getElementById("grade").value;
 
-  const res = await fetch("http://localhost:8004/upload-grade", {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + jwtToken,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      courseCode,
-      username,
-      grade
-    })
-  });
-
-  if (res.status === 401 || res.status === 403) {
-    alert("Session expired. Please log in again.");
+  if (!jwtToken) {
+    alert("You must be logged in to upload grades.");
     return;
   }
 
-  const data = await res.json();
-  showResponse(data);
+  if (!courseCode || !username || !grade) {
+    alert("Please fill in all fields (Course Code, Username, and Grade).");
+    return;
+  }
+
+  try {
+    const res = await fetch(ENDPOINTS.UPLOAD_GRADE, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + jwtToken,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id: {
+          username: username,
+          code: courseCode
+        },
+        grade: parseFloat(grade)
+      })
+    });
+
+    if (res.status === 401) {
+      alert("Session expired. Please log in again.");
+      return;
+    } else if (res.status === 403) {
+      alert("You do not have permission to upload grades.");
+      return;
+    }
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert(`Error ${res.status}: ${JSON.stringify(errorData)}`);
+      return;
+    }
+
+    const data = await res.json();
+    showResponse(data);
+  } catch (error) {
+    alert("The 'Upload Grade' feature is currently down. Please try again later.");
+  }
 }
 
 async function viewCourses() {
@@ -131,21 +162,57 @@ async function viewCourses() {
     return;
   }
 
-  const res = await fetch("http://localhost:8090/courses", {
-    headers: { "Authorization": "Bearer " + jwtToken }
-  });
+  try {
+    const res = await fetch(ENDPOINTS.VIEW_COURSES, {
+      headers: { "Authorization": "Bearer " + jwtToken }
+    });
 
-  if (res.status === 401 || res.status === 403) {
-    alert("Session expired. Please log in again.");
+    if (res.status === 401 || res.status === 403) {
+      alert("Session expired. Please log in again.");
+      return;
+    }
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert(`Error ${res.status}: ${JSON.stringify(errorData)}`);
+      return;
+    }
+
+    const data = await res.json();
+    showResponse(data);
+  } catch (error) {
+    alert("The 'View Courses' feature is currently down. Please try again later.");
+  }
+}
+
+async function viewEnrollments() {
+  if (!jwtToken) {
+    alert("You must be logged in to view enrollments.");
     return;
   }
 
-  if (!res.ok) {
-    const errorData = await res.json();
-    alert(`Error ${res.status}: ${JSON.stringify(errorData)}`);
-    return;
-  }
+  try {
+    const res = await fetch(ENDPOINTS.VIEW_ENROLLMENTS, {
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer " + jwtToken
+      }
+    });
 
-  const data = await res.json();
-  showResponse(data);
+    if (res.status === 401 || res.status === 403) {
+      alert("Session expired. Please log in again.");
+      return;
+    }
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert(`Error ${res.status}: ${JSON.stringify(errorData)}`);
+      return;
+    }
+
+    const data = await res.json();
+    showResponse(data);
+  } catch (error) {
+    alert("The 'View Enrollments' feature is currently down. Please try again later.");
+  }
 }

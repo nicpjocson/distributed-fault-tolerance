@@ -18,6 +18,14 @@ public class JwtSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .cors(cors -> cors.configurationSource(request -> {
+                var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+                corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000")); // Allow localhost:3000
+                corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                corsConfiguration.setAllowedHeaders(List.of("*"));
+                corsConfiguration.setAllowCredentials(true);
+                return corsConfiguration;
+            }))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/grades").hasRole("TEACHER") // Restrict access to 'TEACHER' role
                 .anyRequest().authenticated()

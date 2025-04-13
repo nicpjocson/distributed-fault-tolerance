@@ -10,16 +10,21 @@
   <div class="container">
     <h1>Student Portal</h1>
 
+    <h3>Output</h3>
+    <pre id="response"></pre>
+
     <h3>Manual Token Login</h3>
     <input type="text" id="manualToken" placeholder="Paste JWT token here">
     <button onclick="setManualToken()">Set Token</button>
 
     <!-- Grade Viewing -->
-    <button onclick="viewGrades()">View Grades</button>
+    <button onclick="viewCourses()">View Courses</button>
+    
     <input type="text" id="enrollCourseCode" placeholder="Enter Course Code">
     <button onclick="enroll()">Enroll</button>
-    <button onclick="viewCourses()">View Courses</button>
+    <button onclick="viewEnrollments()">View Enrollments</button>
 
+    <button onclick="viewGrades()">View Grades</button>
     <!-- Upload Grades -->
     <h3>Upload Grade</h3>
     <input id="courseCode" placeholder="Course Code" />
@@ -27,8 +32,7 @@
     <input id="grade" placeholder="Grade" />
     <button onclick="uploadGrade()">Upload Grade</button>
 
-    <h3>Response</h3>
-    <pre id="response"></pre>
+    
   </div>
 
   <script src="scripts.js"></script>
